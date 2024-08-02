@@ -674,9 +674,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_text(
             text=script.STATUS_TXT.format(total, users, chats, round(used_dbSize, 2), tot1, round(used_dbSize2, 2), round(free_dbSize2, 2), tot2, round(used_dbSize3, 2), round(free_dbSize3, 2), tot3, round(used_dbSize4, 2), round(free_dbSize4, 2), tot4, round(used_dbSize5, 2, round(free_dbSize5, 2)),
             reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
+            parse_mode=enums.ParseMode.HTML(
         )
-            
     elif query.data.startswith("setgs"):
         ident, set_type, status, grp_id = query.data.split("#")
         grpid = await active_connection(str(query.from_user.id))
