@@ -661,16 +661,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
         used_dbSize = (stats['dataSize']/(1024*1024))+(stats['indexSize']/(1024*1024))        
         stats2 = await clientDB2.command('dbStats')
         used_dbSize2 = (stats2['dataSize']/(1024*1024))+(stats2['indexSize']/(1024*1024))
-        free_dbSize2 = 512-used_dbSize
+        free_dbSize2 = 512-used_dbSize(
         stats3 = await clientDB3.command('dbStats')
         used_dbSize3 = (stats3['dataSize']/(1024*1024))+(stats3['indexSize']/(1024*1024)) 
-        free_dbSize3 = 512-used_dbSize
+        free_dbSize3 = 512-used_dbSize(
         stats4 = await clientDB4.command('dbStats')
         used_dbSize4 = (stats4['dataSize']/(1024*1024))+(stats4['indexSize']/(1024*1024))  
-        free_dbSize4 = 512-used_dbSize
+        free_dbSize4 = 512-used_dbSize(
         stats5 = await clientDB5.command('dbStats')
         used_dbSize5 = (stats5['dataSize']/(1024*1024))+(stats5['indexSize']/(1024*1024))  
-        free_dbSize5 = 512-used_dbSize
+        free_dbSize5 = 512-used_dbSize(
         await query.message.edit_text(
             text=script.STATUS_TXT.format(total, users, chats, round(used_dbSize, 2), tot1, round(used_dbSize2, 2), round(free_dbSize2, 2), tot2, round(used_dbSize3, 2), round(free_dbSize3, 2), tot3, round(used_dbSize4, 2), round(free_dbSize4, 2), tot4, round(used_dbSize5, 2, round(free_dbSize5, 2)),
             reply_markup=reply_markup,
