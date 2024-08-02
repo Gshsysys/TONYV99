@@ -1,15 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) @AlbertEinsteinTG
-
 import asyncio
 from pyrogram import Client, enums
 from pyrogram.errors import FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from utils import check_loop_sub, get_size
+from Script import script
+
 from database.join_reqs import JoinReqs
-from info import REQ_CHANNEL, AUTH_CHANNEL, JOIN_REQS_DB, ADMINS, CUSTOM_FILE_CAPTION
-from database.ia_filterdb import get_file_details
+from info import REQ_CHANNEL, AUTH_CHANNEL, JOIN_REQS_DB, ADMINS
+
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -17,9 +14,8 @@ INVITE_LINK = None
 db = JoinReqs
 
 async def ForceSub(bot: Client, update: Message, file_id: str = False, mode="checksub"):
-
     global INVITE_LINK
-    auth = ADMINS.copy() + [1125210189]
+    auth = ADMINS
     if update.from_user.id in auth:
         return True
 
@@ -96,11 +92,17 @@ async def ForceSub(bot: Client, update: Message, file_id: str = False, mode="che
         else:
             return True
     except UserNotParticipant:
-        text=f"""<b>𝐇𝐞𝐲..</b>{update.from_user.mention} 🙋‍♂️ \n\nᴘʟᴇᴀꜱᴇ ᴊᴏɪɴ ʙᴏᴛ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ꜰɪʀꜱᴛ, \nᴛʜᴇɴ ʏᴏᴜ ᴡɪʟʟ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.!! \n\n <b>താഴെ കാണുന്ന 𝗝𝗢𝗜𝗡 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 എന്ന ബട്ടണിൽ ക്ലിക്ക് ചെയ്യിത് ചാനലിൽ ജോയിൻ ചെയ്യുക, \n\nഅപ്പോൾ നിങ്ങൾക്ക് ഓട്ടോമാറ്റിക് ആയി മൂവി ലഭിക്കുന്നതാണ്.!!</b>"""
+        text="""**Please Join My Updates Channel to use this Bot!**"""
 
         buttons = [
             [
-                InlineKeyboardButton("𝗝𝗢𝗜𝗡 𝗖𝗛𝗔𝗡𝗡𝗘𝗟", url=invite_link)
+                InlineKeyboardButton("📢 Request to Join Channel 📢", url=invite_link)
+            ],
+            [
+                InlineKeyboardButton(" 🔄 Try Again 🔄 ", callback_data=f"{mode}#{file_id}")
+            ],
+            [
+               InlineKeyboardButton("🤔 Hᴇʏ Bᴏᴛ....! Wʜʏ I'ᴍ Jᴏɪɴɪɴɢ", url="https://graph.org/W%CA%9C%CA%8F-I%E1%B4%8D-J%E1%B4%8F%C9%AA%C9%B4%C9%AA%C9%B4%C9%A2-01-07")
             ]
         ]
 
@@ -108,19 +110,12 @@ async def ForceSub(bot: Client, update: Message, file_id: str = False, mode="che
             buttons.pop()
 
         if not is_cb:
-            sh = await update.reply(
+            await update.reply(
                 text=text,
                 quote=True,
                 reply_markup=InlineKeyboardMarkup(buttons),
-                parse_mode=enums.ParseMode.DEFAULT,
-                disable_web_page_preview=True
+                parse_mode=enums.ParseMode.MARKDOWN,
             )
-            check = await check_loop_sub(bot, update)
-            if check:
-                await send_file(bot, update, mode, file_id)
-                await sh.delete()                
-            else:
-                return False
         return False
 
     except FloodWait as e:
@@ -141,30 +136,4 @@ async def ForceSub(bot: Client, update: Message, file_id: str = False, mode="che
 def set_global_invite(url: str):
     global INVITE_LINK
     INVITE_LINK = url
-
-  
-async def send_file(client, query, ident, file_id):
-    files_ = await get_file_details(file_id)
-    if not files_:
-        return
-    files = files_[0]
-    title = files.file_name
-    size = get_size(files.file_size)
-    f_caption = files.file_name
-    if CUSTOM_FILE_CAPTION:
-        try:
-            f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
-                                                   file_size='' if size is None else size,
-                                                   file_caption='' if f_caption is None else f_caption)
-        except Exception as e:
-            logger.exception(e)
-            f_caption = f_caption
-    if f_caption is None:
-        f_caption = f"{title}"
-    await client.send_cached_media(
-        chat_id=query.from_user.id,
-        file_id=file_id,
-        caption=f_caption,
-        protect_content=True if ident == 'checksubp' else False
-    )
    
