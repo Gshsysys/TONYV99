@@ -1,4 +1,5 @@
 import sys
+import base64
 import asyncio
 import datetime, pytz, time
 from os import environ, execle, system
@@ -99,6 +100,39 @@ async def start(client, message):
         return
 
     data = message.command[1]
+    if data.startswith("pmresult"):
+        ident, base64_string = data.split("_")
+        base64_string = base64_string.strip("=")
+        base64_bytes = (base64_string + "=" * (-len(base64_string) % 4)).encode("ascii")
+        string_bytes = base64.urlsafe_b64decode(base64_bytes) 
+        string = string_bytes.decode("ascii")
+        files, offset, total_results = await get_search_results(string, offset=0, filter=True)
+        if not files:
+            return await message.reply("𝙎𝙤𝙢𝙚𝙩𝙝𝙞𝙣𝙜 𝙒𝙚𝙣𝙩 𝙒𝙧𝙤𝙣𝙜 <i>:(</i>")
+
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"🎭 {get_size(file.file_size)} ➽ {file.file_name}", callback_data=f'pmfiles#{file.file_id}'
+                ),
+            ]
+            for file in files
+        ]
+        if offset != "":
+            key = base64_string
+            btn.append(
+                [InlineKeyboardButton(text=f" 1/{math.ceil(int(total_results) / 10)}", callback_data="pages"),
+                 InlineKeyboardButton(text="𝙉𝙚𝙭𝙩 ➪", callback_data=f"pmnext_{key}_{offset}")]
+            )
+        else:
+            btn.append(
+                [InlineKeyboardButton(text=" 1/1", callback_data="pages")]
+            )
+        text = f'''𝙃𝙚𝙮 {message.from_user.mention} 🙋🏻
+
+𝙃𝙚𝙧𝙚 𝙬𝙝𝙖𝙩 𝙞 𝙛𝙤𝙪𝙣𝙙 𝙤𝙣 𝙪𝙧 𝙦𝙪𝙚𝙧𝙮 "<code>{string}</code>" 👇🏻'''
+        await message.reply(text, reply_markup = InlineKeyboardMarkup(btn))
+        
     try:
         pre, file_id = data.split('_', 1)
     except:
