@@ -757,132 +757,20 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
     pre = 'filep' if settings['file_secure'] else 'file'
     key = f"{message.chat.id}-{message.id}"
-    if settings['button']:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"[{get_size(file.file_size)}] ⊳ {file.file_name}", callback_data=f'files#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
-    else:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"{file.file_name}", callback_data=f'files#{file.file_id}'
-                ),
-                InlineKeyboardButton(
-                    text=f"{get_size(file.file_size)}",
-                    callback_data=f'files_#{file.file_id}',
-                ),
-            ]
-            for file in files
-        ]
-    btn.insert(0, 
-        [
-           InlineKeyboardButton("🔺𝐎𝐓𝐓 𝐔𝐏𝐃𝐀𝐓𝐄𝐒🔺", url='https://t.me/Cinema_Kottaka_updates'),
-           InlineKeyboardButton("🔺𝐎𝐓𝐓 𝐈𝐍𝐒𝐓𝐆𝐑𝐀𝐌🔺", url='https://t.me/Cinema_Kottaka_updates')
-        ]
-    )
-    btn.insert(1, 
-        [
-           InlineKeyboardButton("🔻𝐒𝐄𝐍𝐃 𝐀𝐋𝐋 𝐅𝐈𝐋𝐄𝐒🔻", callback_data=f"sendfiles#{search.replace(' ', '_')}#{key}"),
-           InlineKeyboardButton("🔻𝐋𝐀𝐍𝐆𝐔𝐀𝐆𝐄𝐒🔻", callback_data=f"languages#{search.replace(' ', '_')}#{key}")
-        ]
-    )
-    btn.insert(2, 
-        [
-           InlineKeyboardButton("ǫᴜᴀʟɪᴛʏ", callback_data=f"qualities#{search.replace(' ', '_')}#{key}"),
-           InlineKeyboardButton("ᴇᴘɪsᴏᴅᴇs", callback_data=f"episodes#{search.replace(' ', '_')}#{key}"),
-           InlineKeyboardButton("sᴇᴀsᴏɴs", callback_data=f"seasons#{search.replace(' ', '_')}#{key}"),
-           InlineKeyboardButton("ʏᴇᴀʀs", callback_data=f"years#{search.replace(' ', '_')}#{key}")
-        ]
-    )
-    if offset != "":
-        try:
-            offset = int(offset)
-        except ValueError:
-            offset = 0
-    else:
-        offset = 0    
-        
-    if offset== 0:
-        btn.append(
-            [InlineKeyboardButton(text="📃 1/1", callback_data="pages")]
-        )
-    else:
-        key = f"{message.chat.id}-{message.id}"
-        BUTTONS[key] = search
-        req = message.from_user.id if message.from_user else 0
-        btn.append(
-            [InlineKeyboardButton(text=f"📃 1/{math.ceil(int(total_results) / 8)}", callback_data="pages"),
-            InlineKeyboardButton(text="NEXT ▶️", callback_data=f"next_{req}_{key}_{offset}")]
-       )
-    imdb = await get_poster(search, file=(files[0]).file_name) if settings["imdb"] else None
-    TEMPLATE = settings['template']
-    if imdb:
-        cap = TEMPLATE.format(
-            query=search,
-            title=imdb['title'],
-            votes=imdb['votes'],
-            aka=imdb["aka"],
-            seasons=imdb["seasons"],
-            box_office=imdb['box_office'],
-            localized_title=imdb['localized_title'],
-            kind=imdb['kind'],
-            imdb_id=imdb["imdb_id"],
-            cast=imdb["cast"],
-            runtime=imdb["runtime"],
-            countries=imdb["countries"],
-            certificates=imdb["certificates"],
-            languages=imdb["languages"],
-            director=imdb["director"],
-            writer=imdb["writer"],
-            producer=imdb["producer"],
-            composer=imdb["composer"],
-            cinematographer=imdb["cinematographer"],
-            music_team=imdb["music_team"],
-            distributors=imdb["distributors"],
-            release_date=imdb['release_date'],
-            year=imdb['year'],
-            genres=imdb['genres'],
-            poster=imdb['poster'],
-            plot=imdb['plot'],
-            rating=imdb['rating'],
-            url=imdb['url'],
-            **locals()
-        )
-    else:
-        cap = f"Hey {msg.from_user.mention}\n\n<b>📁 Found</b> {total_results} <b>Files For</b> {search}"
-    if imdb and imdb.get('poster'):
-        try:
-            mat = await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
-                                      reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(180)
-            await mat.delete()
-           # await message.delete()
-        except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
-            pic = imdb.get('poster')
-            poster = pic.replace('.jpg', "._V1_UX360.jpg")
-            mat = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(180)
-            await mat.delete()
-          #  await message.delete()
-        except Exception as e:
-            logger.exception(e)
-            mat = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(180)
-            await mat.delete()
-          #  await message.delete()
-    else:
-        mat = await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))        
-        await asyncio.sleep(180)
-        await mat.delete()
-       # await message.delete()
-   # if spoll:
-      #  await msg.message.delete()
+    temp.SEND_ALL_TEMP[key] = files
+    #give credits to tg: @programcrasher, @vpcreatz_update else u's motherfucker!!!
+    text = f"""🗨️ 𝙏𝙞𝙩𝙡𝙚 : {search.lower()}
+🗃️ 𝙏𝙤𝙩𝙖𝙡 𝙁𝙞𝙡𝙚𝙨 : {total_results}
 
+©️ <a herf=https://t.me/vpcreatz_update>@Vᴘ Cʀᴇᴀᴛᴢ</a>"""
+    string = search.lower()
+    string_bytes = string.encode("ascii")
+    base64_bytes = base64.urlsafe_b64encode(string_bytes)
+    base64_string = (base64_bytes.decode("ascii")).strip("=")
+    btn = [[
+        InlineKeyboardButton("⛓️‍💥 𝘿𝙤𝙬𝙣𝙡𝙤𝙖𝙙", url=f"https://t.me/{client.me.username}?start=pmresult_{base64_string}")
+    ]]
+    await message.reply(text, reply_markup=InlineKeyboardMarkup(btn))
 
 async def advantage_spell_chok(msg):
     mv_id = msg.id
