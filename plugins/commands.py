@@ -11,7 +11,7 @@ from Script import script
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from database.ia_filterdb import Media2, Media3, Media4, Media5, get_file_details, unpack_new_file_id, delete_files_below_threshold
+from database.ia_filterdb import Media2, Media3, Media4, Media5, get_file_details, unpack_new_file_id, delete_files_below_threshold, get_search_results
 from database.users_chats_db import db
 from plugins.fsub import ForceSub
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, DATABASE_URI, DATABASE_NAME
