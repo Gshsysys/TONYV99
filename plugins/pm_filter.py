@@ -757,7 +757,6 @@ async def auto_filter(client, msg, spoll=False):
         search, files, offset, total_results = spoll
     pre = 'filep' if settings['file_secure'] else 'file'
     key = f"{message.chat.id}-{message.id}"
-    temp.SEND_ALL_TEMP[key] = files
     #give credits to tg: @programcrasher, @vpcreatz_update else u's motherfucker!!!
     text = f"""🗨️ 𝙏𝙞𝙩𝙡𝙚 : {search.lower()}
 🗃️ 𝙏𝙤𝙩𝙖𝙡 𝙁𝙞𝙡𝙚𝙨 : {total_results}
