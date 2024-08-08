@@ -2,6 +2,7 @@
 import asyncio
 lock = asyncio.Lock()
 import re
+import base64
 import ast
 import math
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
